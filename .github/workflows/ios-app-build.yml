@@ -1,0 +1,63 @@
+name: Build iOS app
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install gpg
+        run: brew install gnupg #open issue to install by default on macos image
+      - name: Switch XCode Version
+        run: sudo xcode-select -s /Applications/Xcode_11.2.app
+      - name: Setup cert
+        run: ./.github/secrets/decrypt_cert.sh
+        env:
+          IOS_CERTIFICATE_ENCRYPT: ${{ secrets.IOS_CERTIFICATE_ENCRYPT }}
+          IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}
+      - name: Install cordova
+        run: npm install -g cordova
+      - name: Create project
+        run: |
+          cordova create plancerro
+          cp -rf config.xml resources plancerro/
+          cp -rf css fonts img js lib index.html main.html plancerro/www/
+      - name: Generate xcode project
+        run: |
+          cd plancerro
+          cordova platform add ios
+          cordova prepare ios
+      - name: Build app
+        run: |
+          cd plancerro/platforms/ios && xcodebuild archive \
+            -workspace "Plan Cerro.xcworkspace" \
+            -scheme "Plan Cerro" \
+            -sdk iphoneos13.2 \
+            -configuration Release \
+            -archivePath $PWD/build/plancerro.xcarchive \
+            IPHONEOS_DEPLOYMENT_TARGET=9.0 \
+            DEVELOPMENT_TEAM=2P43RZUB7Q \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            PROVISIONING_PROFILE="5ffa0f6b-a14e-40dc-a6e5-d182edbc6fe5" \
+            CODE_SIGN_STYLE="Manual"
+      - name: Export IPA
+        run: |
+          cp ./.github/config/ios/ExportOptions.plist plancerro/platforms/ios/
+          cd plancerro/platforms/ios && xcodebuild \
+          -exportArchive \
+          -exportPath $PWD/build \
+          -archivePath $PWD/build/plancerro.xcarchive \
+          -exportOptionsPlist $PWD/ExportOptions.plist
+      - name: Upload all ios resources if fail
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: ios platform
+          path: plancerro/platforms/ios/
+      - name: Upload IPA
+        uses: actions/upload-artifact@v1
+        with:
+          name: plancerro.ipa
+          path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
