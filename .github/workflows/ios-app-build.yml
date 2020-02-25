@@ -23,7 +23,7 @@ jobs:
         run: |
           cordova create plancerro
           cp -rf config.xml resources plancerro/
-          cp -rf css fonts img js lib index.html main.html plancerro/www/
+          cp -rf css img js lib index.html main.html plancerro/www/
       - name: Generate xcode project
         run: |
           cd plancerro
