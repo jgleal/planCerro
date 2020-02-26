@@ -45,6 +45,7 @@
 	<preference name="SuppressesLongPressGesture" value="true" />
 	<preference name="Orientation" value="portrait" />
 	<preference name="phonegap-version" value="cli-8.1.1" />
+	<icon src="publicacion/icon_higres.png" width="1024" height="1024" />
 
 	<platform name="android">
 		<preference name="android-installLocation" value="auto" />
