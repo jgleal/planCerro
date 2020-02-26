@@ -8,8 +8,8 @@
 	<string>app-store</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>es.juntadeandalucia.mapea4.planromero16</key>
-		<string>1aabf9a5-1ea1-496e-a022-16ccbe02755a</string>
+		<key>es.juntadeandalucia.mapea.plancerro</key>
+		<string>5ffa0f6b-a14e-40dc-a6e5-d182edbc6fe5</string>
 	</dict>
 	<key>signingStyle</key>
 	<string>manual</string>
