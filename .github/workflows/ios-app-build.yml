@@ -11,7 +11,7 @@ jobs:
       - name: Install gpg
         run: brew install gnupg #open issue to install by default on macos image
       - name: Switch XCode Version
-        run: sudo xcode-select -s /Applications/Xcode_11.2.app
+        run: sudo xcode-select -s /Applications/Xcode_11.2.1.app
       - name: Setup cert
         run: ./.github/secrets/decrypt_cert.sh
         env:
