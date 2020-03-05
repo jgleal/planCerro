@@ -34,7 +34,8 @@ Notas de versión 2019
 
 Sitio web
 =========
-http://juntadeandalucia.es/justiciaeinterior
+https://juntadeandalucia.es/organismos/presidenciaadministracionpublicaeinterior.html
+
 
 Correo electrónico
 ==================
