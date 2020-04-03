@@ -17,8 +17,13 @@ jobs:
       - name: Setup cert
         run: ./.github/secrets/decrypt_cert.sh
         env:
+          PROJECT_NAME: Plan Cerro.xcworkspace
+          PROJECT_SCHEME: Plan Cerro
+          PROJECT_CONFIGURATION: Release
           IOS_CERTIFICATE_ENCRYPT: ${{ secrets.IOS_CERTIFICATE_ENCRYPT }}
           IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}
+          APPLE_ID_USER: ${{ secrets.APPLE_USER }}
+          APPLE_ID_PASS: ${{ secrets.APPLE_PASS }}
       - name: Install cordova
         run: npm install -g cordova
       - name: Create project
@@ -34,23 +39,22 @@ jobs:
       - name: Build app
         run: |
           cd plancerro/platforms/ios && xcodebuild archive \
-            -workspace "Plan Cerro.xcworkspace" \
-            -scheme "Plan Cerro" \
-            -sdk iphoneos13.2 \
-            -configuration Release \
-            -archivePath $PWD/build/plancerro.xcarchive \
-            IPHONEOS_DEPLOYMENT_TARGET=9.0 \
+            -workspace "$PROJECT_WORKSPACE" \
+            -scheme "$PROJECT_SCHME" \
+            -configuration "$PROJECT_CONFIGURATION" \
+            -archivePath $PWD/build/app_build.xcarchive \
+            -allowProvisioningUpdates \
             DEVELOPMENT_TEAM=2P43RZUB7Q \
-            CODE_SIGN_IDENTITY="iPhone Distribution" \
-            PROVISIONING_PROFILE="5ffa0f6b-a14e-40dc-a6e5-d182edbc6fe5" \
-            CODE_SIGN_STYLE="Manual"
+            CODE_SIGN_IDENTITY="iPhone Developer" \
+            CODE_SIGN_STYLE="Automatic"
       - name: Export IPA
         run: |
           cp ./.github/config/ios/ExportOptions.plist plancerro/platforms/ios/
           cd plancerro/platforms/ios && xcodebuild \
           -exportArchive \
+          -allowProvisioningUpdates \
           -exportPath $PWD/build \
-          -archivePath $PWD/build/plancerro.xcarchive \
+          -archivePath $PWD/build/app_build.xcarchive \
           -exportOptionsPlist $PWD/ExportOptions.plist
       - name: Upload all ios resources if fail
         uses: actions/upload-artifact@v1
@@ -64,4 +68,4 @@ jobs:
           name: plancerro.ipa
           path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
 #      - name: Publish ipa to iTunes Connect
-#        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${{ secrets.APPLE_USER }}" --password "${{ secrets.APPLE_PASS }}"
+#        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${APPLE_ID_USER}" --password "${APPLE_ID_PASS}"
