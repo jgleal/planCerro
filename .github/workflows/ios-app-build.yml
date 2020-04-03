@@ -1,6 +1,8 @@
 name: Build iOS app
 
-on: [push]
+on: 
+ release:
+    types: [published]
 
 jobs:
   build:
@@ -61,5 +63,5 @@ jobs:
         with:
           name: plancerro.ipa
           path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
-      - name: Publish ipa to iTunes Connect
-        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${{ secrets.APPLE_USER }}" --password "${{ secrets.APPLE_PASS }}"
+#      - name: Publish ipa to iTunes Connect
+#        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${{ secrets.APPLE_USER }}" --password "${{ secrets.APPLE_PASS }}"
