@@ -41,7 +41,7 @@ jobs:
           echo "$PROJECT_WORKSPACE"
           cd plancerro/platforms/ios && xcodebuild archive \
             -workspace "$PROJECT_WORKSPACE" \
-            -scheme "$PROJECT_SCHME" \
+            -scheme "$PROJECT_SCHEME" \
             -configuration "$PROJECT_CONFIGURATION" \
             -archivePath $PWD/build/app_build.xcarchive \
             -allowProvisioningUpdates \
@@ -69,7 +69,9 @@ jobs:
           name: plancerro.ipa
           path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
 #      - name: Publish ipa to iTunes Connect
-#        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${APPLE_ID_USER}" --password "${APPLE_ID_PASS}"
+#        run: xcrun altool --upload-app --type ios \
+#              --file "plancerro/platforms/ios/build/Plan Cerro.ipa" 
+#              --username "${APPLE_ID_USER}" --password "${APPLE_ID_PASS}"
 #        env:
 #           APPLE_ID_USER: ${{ secrets.APPLE_USER }}
 #           APPLE_ID_PASS: ${{ secrets.APPLE_PASS }}
