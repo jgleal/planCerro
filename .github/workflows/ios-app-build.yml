@@ -2,7 +2,7 @@ name: Build iOS app
 
 on: 
  release:
-    types: [created]
+    types: [publish]
 
 jobs:
   build:
