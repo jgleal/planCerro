@@ -38,6 +38,7 @@ jobs:
           cordova prepare ios
       - name: Build app
         run: |
+          echo ${PROJECT_WORKSPACE}
           cd plancerro/platforms/ios && xcodebuild archive \
             -workspace "$PROJECT_WORKSPACE" \
             -scheme "$PROJECT_SCHME" \
