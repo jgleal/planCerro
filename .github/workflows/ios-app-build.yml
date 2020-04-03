@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    env:
+      PROJECT_WORKSPACE: Plan Cerro.xcworkspace
+      PROJECT_SCHEME: Plan Cerro
+      PROJECT_CONFIGURATION: Release
 
     steps:
       - uses: actions/checkout@v1
@@ -16,14 +20,9 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_11.2.1.app
       - name: Setup cert
         run: ./.github/secrets/decrypt_cert.sh
-        env:
-          PROJECT_WORKSPACE: Plan Cerro.xcworkspace
-          PROJECT_SCHEME: Plan Cerro
-          PROJECT_CONFIGURATION: Release
+        env:         
           IOS_CERTIFICATE_ENCRYPT: ${{ secrets.IOS_CERTIFICATE_ENCRYPT }}
-          IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}
-          APPLE_ID_USER: ${{ secrets.APPLE_USER }}
-          APPLE_ID_PASS: ${{ secrets.APPLE_PASS }}
+          IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}         
       - name: Install cordova
         run: npm install -g cordova
       - name: Create project
@@ -38,7 +37,8 @@ jobs:
           cordova prepare ios
       - name: Build app
         run: |
-          echo ${PROJECT_WORKSPACE}
+          echo "${PROJECT_WORKSPACE}"
+          echo "$PROJECT_WORKSPACE"
           cd plancerro/platforms/ios && xcodebuild archive \
             -workspace "$PROJECT_WORKSPACE" \
             -scheme "$PROJECT_SCHME" \
@@ -70,3 +70,6 @@ jobs:
           path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
 #      - name: Publish ipa to iTunes Connect
 #        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${APPLE_ID_USER}" --password "${APPLE_ID_PASS}"
+#        env:
+#           APPLE_ID_USER: ${{ secrets.APPLE_USER }}
+#           APPLE_ID_PASS: ${{ secrets.APPLE_PASS }}
