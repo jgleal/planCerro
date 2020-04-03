@@ -5,14 +5,7 @@
 	<key>compileBitcode</key>
 	<true/>
 	<key>method</key>
-	<string>app-store</string>
-	<key>provisioningProfiles</key>
-	<dict>
-		<key>es.juntadeandalucia.mapea.plancerro</key>
-		<string>5ffa0f6b-a14e-40dc-a6e5-d182edbc6fe5</string>
-	</dict>
-	<key>signingStyle</key>
-	<string>manual</string>
+	<string>app-store</string>		
 	<key>teamID</key>
 	<string>2P43RZUB7Q</string>    
 </dict>
