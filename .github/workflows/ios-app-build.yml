@@ -7,11 +7,6 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-    env:
-      PROJECT_WORKSPACE: Plan Cerro.xcworkspace
-      APP_NAME: Plan Cerro
-      PROJECT_SCHEME: Plan Cerro
-      PROJECT_CONFIGURATION: Release
 
     steps:
       - uses: actions/checkout@v1
@@ -21,56 +16,52 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_11.2.1.app
       - name: Setup cert
         run: ./.github/secrets/decrypt_cert.sh
-        env:         
+        env:
           IOS_CERTIFICATE_ENCRYPT: ${{ secrets.IOS_CERTIFICATE_ENCRYPT }}
-          IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}         
+          IOS_CERTIFICATE_PASS: ${{ secrets.IOS_CERTIFICATE_PASS }}
       - name: Install cordova
         run: npm install -g cordova
       - name: Create project
         run: |
-          cordova create app
-          cp -rf config.xml resources app/
-          cp -rf css img js lib index.html main.html app/www/
+          cordova create plancerro
+          cp -rf config.xml resources plancerro/
+          cp -rf css img js lib index.html main.html plancerro/www/
       - name: Generate xcode project
         run: |
-          cd app
+          cd plancerro
           cordova platform add ios
           cordova prepare ios
       - name: Build app
         run: |
-           cd app/platforms/ios && xcodebuild archive \
-            -workspace "$PROJECT_WORKSPACE" \
-            -scheme "$PROJECT_SCHEME" \
-            -configuration "$PROJECT_CONFIGURATION" \
-            -archivePath $PWD/build/app_build.xcarchive \
-            -allowProvisioningUpdates \
+          cd plancerro/platforms/ios && xcodebuild archive \
+            -workspace "Plan Cerro.xcworkspace" \
+            -scheme "Plan Cerro" \
+            -sdk iphoneos13.2 \
+            -configuration Release \
+            -archivePath $PWD/build/plancerro.xcarchive \
+            IPHONEOS_DEPLOYMENT_TARGET=9.0 \
             DEVELOPMENT_TEAM=2P43RZUB7Q \
-            CODE_SIGN_IDENTITY="iPhone Developer" \
-            CODE_SIGN_STYLE="Automatic"
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            PROVISIONING_PROFILE="5ffa0f6b-a14e-40dc-a6e5-d182edbc6fe5" \
+            CODE_SIGN_STYLE="Manual"
       - name: Export IPA
         run: |
-          cp ./.github/config/ios/ExportOptions.plist app/platforms/ios/
-          cd app/platforms/ios && xcodebuild \
+          cp ./.github/config/ios/ExportOptions.plist plancerro/platforms/ios/
+          cd plancerro/platforms/ios && xcodebuild \
           -exportArchive \
-          -allowProvisioningUpdates \
           -exportPath $PWD/build \
-          -archivePath $PWD/build/app_build.xcarchive \
+          -archivePath $PWD/build/plancerro.xcarchive \
           -exportOptionsPlist $PWD/ExportOptions.plist
       - name: Upload all ios resources if fail
         uses: actions/upload-artifact@v1
         if: failure()
         with:
           name: ios platform
-          path: app/platforms/ios/
+          path: plancerro/platforms/ios/
       - name: Upload IPA
         uses: actions/upload-artifact@v1
         with:
-          name: '$APP_NAME.ipa'
-          path: 'app/platforms/ios/build/$APP_NAME.ipa'
+          name: plancerro.ipa
+          path: 'plancerro/platforms/ios/build/Plan Cerro.ipa'
 #      - name: Publish ipa to iTunes Connect
-#        run: xcrun altool --upload-app --type ios \
-#              --file "app/platforms/ios/build/$APP_NAME.ipa" 
-#              --username "${APPLE_ID_USER}" --password "${APPLE_ID_PASS}"
-#        env:
-#           APPLE_ID_USER: ${{ secrets.APPLE_USER }}
-#           APPLE_ID_PASS: ${{ secrets.APPLE_PASS }}
+#        run: xcrun altool --upload-app --type ios --file "plancerro/platforms/ios/build/Plan Cerro.ipa" --username "${{ secrets.APPLE_USER }}" --password "${{ secrets.APPLE_PASS }}"
